@@ -14,7 +14,8 @@ dns:
   proxy-server-nameserver:
     - tls://dot.pub
     - tls://dns.alidns.com
-  nameserver-policy:
-    "*.makima.online":
-      - 119.29.29.29
-      - 223.5.5.4
+  fake-ip-filter:
+    - "*"
+    - *.lan
+    - time.*.com
+    - ntp.*.com
