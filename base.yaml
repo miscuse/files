@@ -15,6 +15,3 @@ dns:
   proxy-server-nameserver:
     - tls://dot.pub
     - tls://dns.alidns.com
-  direct-nameserver:
-    - tls://dot.pub
-    - tls://dns.alidns.com
