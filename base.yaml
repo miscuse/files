@@ -20,3 +20,7 @@ dns:
     - *.lan
     - time.*.com
     - ntp.*.com
+  nameserver-policy:
+    "*.makima.online":
+      - 119.29.29.29
+      - 223.5.5.4
