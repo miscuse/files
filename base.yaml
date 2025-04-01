@@ -15,3 +15,8 @@ dns:
   proxy-server-nameserver:
     - tls://dot.pub
     - tls://dns.alidns.com
+  fake-ip-filter:
+    - "*"
+    - *.lan
+    - time.*.com
+    - ntp.*.com
