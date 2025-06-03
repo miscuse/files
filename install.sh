@@ -15,7 +15,7 @@ echo "[*] Wiping disk: $disk"
 # sgdisk --zap-all "$disk"
 blkdiscard -v -f "$disk"
 # 不能用 blkdiscard 才考虑 dd bs=1M status=progress if=/dev/urandom of=/dev/deleteyourssd
-#sgdisk -o "$disk" || true
+sgdisk --zap-all -o "$disk"
 
 echo "[*] Creating partitions"
 sgdisk -n 1:0:+"$efi_size" -t 1:ef00 -c 1:"EFI system partition" "$disk"
