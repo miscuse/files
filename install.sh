@@ -60,14 +60,15 @@ done
 umount -R /mnt
 
 mount -o compress=zstd,ssd,subvol=root "$root_part" /mnt
-mkdir -p /mnt/{boot/efi,var/log,var/cache,var/lib/portables,var/lib/machines,var/lib/aurbuild,home/"$username"/.var}
+mkdir -p /mnt/{boot/efi,var/log,var/cache,var/lib/portables,var/lib/machines,var/lib/aurbuild,home/"$username"}
 mount "$efi_part" /mnt/boot/efi
 mount -o compress=zstd,ssd,subvol=log "$root_part" /mnt/var/log
 mount -o compress=zstd,ssd,subvol=cache "$root_part" /mnt/var/cache
-mount -o compress=zstd,ssd,subvol=portables "$root_part" /mnt/var/portables
-mount -o compress=zstd,ssd,subvol=machines "$root_part" /mnt/var/machines
-mount -o compress=zstd,ssd,subvol=aurbuild "$root_part" /mnt/var/aurbuild
+mount -o compress=zstd,ssd,subvol=portables "$root_part" /mnt/var/lib/portables
+mount -o compress=zstd,ssd,subvol=machines "$root_part" /mnt/var/lib/machines
+mount -o compress=zstd,ssd,subvol=aurbuild "$root_part" /mnt/var/lib/aurbuild
 mount -o compress=zstd,ssd,subvol=home "$root_part" /mnt/home/"$username"
+mkdir -p /mnt/home/"$username"/.var
 mount -o compress=zstd,ssd,subvol=dotvar "$root_part" /mnt/home/"$username"/.var
 
 # --- Step 6: Install base system ---
