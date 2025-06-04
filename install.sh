@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # --- Step 0: Custom mirrorlist ---
-cat << EOF > /etc/pacman.d/mirrorlist
+cat << 'EOF' > /etc/pacman.d/mirrorlist
 CacheServer = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch
 CacheServer = https://mirrors.cloud.tencent.com/archlinux/$repo/os/$arch
 CacheServer = https://mirrors.jlu.edu.cn/archlinux/$repo/os/$arch
@@ -79,6 +79,28 @@ pacstrap -K /mnt base base-devel linux linux-firmware \
   zsh moreutils pacman-contrib htop ripgrep fd fzf fastfetch \
   grub efibootmgr os-prober
 
+cat << 'EOF' > /mnt/etc/pacman.d/cnmirrorlist
+CacheServer = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
+CacheServer = https://mirrors.cloud.tencent.com/archlinuxcn/$arch
+CacheServer = https://mirrors.jlu.edu.cn/archlinuxcn/$arch
+CacheServer = https://mirrors.nju.edu.cn/archlinuxcn/$arch
+CacheServer = https://mirrors.zju.edu.cn/archlinuxcn/$arch
+CacheServer = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+CacheServer = https://mirrors.pku.edu.cn/archlinuxcn/$arch
+CacheServer = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
+CacheServer = https://mirrors.163.com/archlinux-cn/$arch
+#CacheServer = https://mirrors.xtom.hk/archlinuxcn/$arch
+#Server = https://mirrors.xtom.hk/archlinuxcn/$arch
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
+EOF
+
+cat << EOF >> /mnt/etc/pacman.conf
+[archlinuxcn]
+Include = /etc/pacman.d/cnmirrorlist
+EOF
+
 # --- Step 7: Configure system ---
 echo "[*] Generating fstab"
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -129,27 +151,6 @@ pacman -S --noconfirm --asdeps dnsmasq qemu-desktop
 usermod -aG docker,libvirt "$username"
 
 # archlinuxcn packages
-cat << EOF > /etc/pacman.d/cnmirrorlist
-CacheServer = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
-CacheServer = https://mirrors.cloud.tencent.com/archlinuxcn/$arch
-CacheServer = https://mirrors.jlu.edu.cn/archlinuxcn/$arch
-CacheServer = https://mirrors.nju.edu.cn/archlinuxcn/$arch
-CacheServer = https://mirrors.zju.edu.cn/archlinuxcn/$arch
-CacheServer = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
-CacheServer = https://mirrors.pku.edu.cn/archlinuxcn/$arch
-CacheServer = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
-CacheServer = https://mirrors.163.com/archlinux-cn/$arch
-#CacheServer = https://mirrors.xtom.hk/archlinuxcn/$arch
-#Server = https://mirrors.xtom.hk/archlinuxcn/$arch
-Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
-Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
-Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
-EOF
-
-cat << EOF >> /etc/pacman.conf
-[archlinuxcn]
-Include = /etc/pacman.d/cnmirrorlist
-EOF
 
 pacman -Syu --noconfirm archlinuxcn-keyring paru
 
