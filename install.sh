@@ -21,12 +21,18 @@ EOF
 
 # --- Step 1: User input ---
 read -rp "Enter target disk (e.g. /dev/nvme0n1): " disk
-read -rp "Enter EFI partition size (default: 1G): " efi_size
+read -rp "Enter EFI partition size (e.g. 1G): " efi_size
 efi_size=${efi_size:-1G}
 
 read -rp "Enter hostname: " hostname
 read -rp "Enter new username: " username
 read -rp "Enter a password for root: " password
+
+read -rp "Use NVIDIA GPU? (y/n): " use_nvidia
+[[ "$use_nvidia" == [yY] ]] && is_nvidia=true || is_nvidia=false
+
+read -rp "Use Intel CPU (to install intel-ucode)? (y/n): " use_intel
+[[ "$use_intel" == [yY] ]] && is_intel=true || is_intel=false
 
 # --- Step 2: Wipe disk ---
 echo "[*] Wiping disk $disk"
@@ -75,8 +81,8 @@ mount -o compress=zstd,subvol=dotvar "$root_part" /mnt/home/"$username"/.var
 # --- Step 6: Install base system ---
 echo "[*] Installing base system"
 pacstrap -K /mnt base base-devel linux linux-firmware \
-  vim neovim networkmanager sudo btrfs-progs man-db man-pages \
-  zsh moreutils pacman-contrib htop ripgrep fd fzf fastfetch \
+  vim neovim networkmanager sudo man-db man-pages \
+  zsh moreutils btrfs-progs htop ripgrep fd fzf fastfetch \
   grub efibootmgr os-prober
 
 cat << 'EOF' > /mnt/etc/pacman.d/cnmirrorlist
@@ -137,36 +143,44 @@ sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# Install packages
+## Install packages ##
+
+# install keyring first
+pacman -Syu --noconfirm archlinuxcn-keyring
+
+# configurations and services related packages
+pacman -S --noconfirm rsync devtools chezmoi chronyd cpupower pacman-contrib snapper snap-pac paru
+
 pacman -S --noconfirm --asdeps gnome
 pacman -S --noconfirm firefox firefox-i18n-zh-cn
 pacman -S --noconfirm zsh-completions zsh-autosuggestions zsh-syntax-highlighting
 pacman -S --noconfirm noto-fonts-cjk noto-fonts noto-fonts-emoji ttf-sarasa-gothic ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono
-pacman -S --noconfirm snapper snap-pac
-pacman -S --noconfirm chrony cpupower chezmoi starship direnv
+pacman -S --noconfirm starship direnv gnome-shell-extension-appindicator
 
 # docker & virt-manager
 pacman -S --noconfirm docker virt-manager
 pacman -S --noconfirm --asdeps dnsmasq qemu-desktop
 usermod -aG docker,libvirt "$username"
 
-# archlinuxcn packages
-
-pacman -Syu --noconfirm archlinuxcn-keyring paru
-
 ############ hardware specific ############
-# nvidia
-pacman -S --noconfirm nvidia-open
-systemctl enable nvidia-suspend.service nvidia-hibernate.service nvidia-resume.service
-ln -sf /dev/null /etc/udev/rules.d/61-gdm.rules
+if [ "$is_nvidia" = true ]; then
+  echo "Installing NVIDIA drivers..."
+  pacman -S --noconfirm nvidia-open nvidia-prime
+  systemctl enable nvidia-suspend.service nvidia-hibernate.service nvidia-resume.service
+  ln -sf /dev/null /etc/udev/rules.d/61-gdm.rules
+fi
 
-# intel-ucode
-pacman -S --noconfirm intel-ucode
+if [ "$is_intel" = true ]; then
+  echo "Installing Intel microcode..."
+  pacman -S --noconfirm intel-ucode
+fi
 ###########################################
 
-# Enable services
+## Enable services
 systemctl enable NetworkManager
 systemctl enable gdm
+
+echo PATH=/home/"$username"/bin:/usr/local/bin:/usr/bin >> /etc/environment
 EOF
 
 echo "[✓] System installation complete! You can now reboot."
