@@ -34,6 +34,9 @@ read -rp "Use NVIDIA GPU? (y/n): " use_nvidia
 read -rp "Use Intel CPU (to install intel-ucode)? (y/n): " use_intel
 [[ "$use_intel" == [yY] ]] && is_intel=true || is_intel=false
 
+read -rp "Use AMD CPU (to install amd-ucode)? (y/n): " use_amd
+[[ "$use_amd" == [yY] ]] && is_amd=true || is_amd=false
+
 # --- Step 2: Wipe disk ---
 echo "[*] Wiping disk $disk"
 blkdiscard -v -f "$disk"
@@ -82,8 +85,7 @@ mount -o compress=zstd,subvol=dotvar "$root_part" /mnt/home/"$username"/.var
 echo "[*] Installing base system"
 pacstrap -K /mnt base base-devel linux linux-firmware \
   vim neovim networkmanager sudo man-db man-pages \
-  zsh moreutils btrfs-progs htop ripgrep fd fzf fastfetch \
-  grub efibootmgr os-prober
+  bash zsh btrfs-progs efibootmgr grub os-prober \
 
 cat << 'EOF' > /mnt/etc/pacman.d/cnmirrorlist
 CacheServer = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
@@ -155,7 +157,7 @@ pacman -S --noconfirm --asdeps gnome
 pacman -S --noconfirm firefox firefox-i18n-zh-cn
 pacman -S --noconfirm zsh-completions zsh-autosuggestions zsh-syntax-highlighting
 pacman -S --noconfirm noto-fonts-cjk noto-fonts noto-fonts-emoji ttf-sarasa-gothic ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono
-pacman -S --noconfirm starship direnv gnome-shell-extension-appindicator
+pacman -S --noconfirm direnv starship htop ripgrep fd fzf moreutils fastfetch gnome-shell-extension-appindicator
 
 # docker & virt-manager
 pacman -S --noconfirm docker virt-manager
@@ -173,6 +175,11 @@ fi
 if [ "$is_intel" = true ]; then
   echo "Installing Intel microcode..."
   pacman -S --noconfirm intel-ucode
+fi
+
+if [ "$is_amd" = true ]; then
+  echo "Installing AMD microcode..."
+  pacman -S --noconfirm amd-ucode
 fi
 ###########################################
 
