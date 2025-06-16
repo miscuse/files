@@ -148,7 +148,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 pacman -Syu --noconfirm archlinuxcn-keyring
 
 # configurations and services related packages
-pacman -S --noconfirm rsync devtools chezmoi chrony cpupower pacman-contrib snapper snap-pac paru
+pacman -S --noconfirm rsync devtools chezmoi chrony pacman-contrib snapper snap-pac flatpak paru
 
 pacman -S --noconfirm --asdeps gnome
 pacman -S --noconfirm firefox firefox-i18n-zh-cn
@@ -186,7 +186,7 @@ fi
 
 if [[ "$use_amd_gpu" == [yY] ]]; then
   echo "Installing AMD GPU drivers..."
-  pacman -S --noconfirm vulkan-radeon
+  pacman -S --noconfirm mesa vulkan-radeon
 fi
 ###########################################
 
