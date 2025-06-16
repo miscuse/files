@@ -28,14 +28,11 @@ read -rp "Enter hostname: " hostname
 read -rp "Enter new username: " username
 read -rp "Enter a password for root: " password
 
-read -rp "Use NVIDIA GPU? (y/n): " use_nvidia
-[[ "$use_nvidia" == [yY] ]] && is_nvidia=true || is_nvidia=false
-
-read -rp "Use Intel CPU (to install intel-ucode)? (y/n): " use_intel
-[[ "$use_intel" == [yY] ]] && is_intel=true || is_intel=false
-
-read -rp "Use AMD CPU (to install amd-ucode)? (y/n): " use_amd
-[[ "$use_amd" == [yY] ]] && is_amd=true || is_amd=false
+read -rp "Use NVIDIA GPU? (y/n): " use_nvidia_gpu
+read -rp "Use Intel CPU (install intel-ucode)? (y/n): " use_intel_cpu
+read -rp "Use AMD CPU (install amd-ucode)? (y/n): " use_amd_cpu
+read -rp "Use Intel GPU (install vulkan-intel etc)? (y/n): " use_intel_gpu
+read -rp "Use AMD GPU (install vulkan-radeon etc)? (y/n): " use_amd_gpu
 
 # --- Step 2: Wipe disk ---
 echo "[*] Wiping disk $disk"
@@ -157,7 +154,7 @@ pacman -S --noconfirm --asdeps gnome
 pacman -S --noconfirm firefox firefox-i18n-zh-cn
 pacman -S --noconfirm zsh-completions zsh-autosuggestions zsh-syntax-highlighting
 pacman -S --noconfirm noto-fonts-cjk noto-fonts noto-fonts-emoji ttf-sarasa-gothic ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono
-pacman -S --noconfirm direnv starship htop ripgrep fd fzf moreutils fastfetch gnome-shell-extension-appindicator
+pacman -S --noconfirm --asexplicit direnv starship htop ripgrep fd fzf moreutils fastfetch gnome-shell-extension-appindicator
 
 # docker & virt-manager
 pacman -S --noconfirm docker virt-manager
@@ -165,21 +162,31 @@ pacman -S --noconfirm --asdeps dnsmasq qemu-desktop
 usermod -aG docker,libvirt "$username"
 
 ############ hardware specific ############
-if [ "$is_nvidia" = true ]; then
+if [[ "$use_nvidia_gpu" == [yY] ]]; then
   echo "Installing NVIDIA drivers..."
   pacman -S --noconfirm nvidia-open nvidia-prime
   systemctl enable nvidia-suspend.service nvidia-hibernate.service nvidia-resume.service
   ln -sf /dev/null /etc/udev/rules.d/61-gdm.rules
 fi
 
-if [ "$is_intel" = true ]; then
+if [[ "$use_intel_cpu" == [yY] ]]; then
   echo "Installing Intel microcode..."
   pacman -S --noconfirm intel-ucode
 fi
 
-if [ "$is_amd" = true ]; then
+if [[ "$use_amd_cpu" == [yY] ]]; then
   echo "Installing AMD microcode..."
   pacman -S --noconfirm amd-ucode
+fi
+
+if [[ "$use_intel_gpu" == [yY] ]]; then
+  echo "Installing Intel GPU drivers..."
+  pacman -S --noconfirm intel-media-driver vulkan-intel
+fi
+
+if [[ "$use_amd_gpu" == [yY] ]]; then
+  echo "Installing AMD GPU drivers..."
+  pacman -S --noconfirm vulkan-radeon
 fi
 ###########################################
 
