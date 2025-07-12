@@ -23,6 +23,7 @@ dns:
     respect-rules: true
 
 rules:
+  - PROCESS-NAME,ssh,DIRECT
   - PROCESS-NAME,aria2c,DIRECT
   - PROCESS-NAME,onedrive,DIRECT
   - DOMAIN-SUFFIX,acgnx.se,proxy
