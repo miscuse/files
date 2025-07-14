@@ -61,6 +61,13 @@ proxy-groups:
       - HK
       - TW
     type: select
+  - name: media
+    proxies:
+      - HK
+      - TW
+      - private
+    type: select
+    include-all: true
   - name: HK
     type: url-test
     include-all: true
@@ -75,9 +82,3 @@ proxy-groups:
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
-  - name: media
-    proxies:
-      - public
-      - private
-    type: select
-    include-all: true
