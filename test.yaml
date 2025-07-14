@@ -28,6 +28,7 @@ rules:
   - PROCESS-NAME,onedrive,DIRECT
   - GEOSITE,bahamut,media
   - GEOSITE,netflix,media
+  - GEOSITE,18comic,media
   - DOMAIN-SUFFIX,acgnx.se,proxy
   - DOMAIN,mikanani.me,proxy
   - PROCESS-NAME,qbittorrent,DIRECT
@@ -35,7 +36,6 @@ rules:
   - GEOSITE,google-gemini,proxy
   - GEOSITE,anthropic,proxy
   - GEOSITE,microsoft,proxy
-  - GEOSITE,18comic,public
   - GEOSITE,steam@cn,DIRECT
   - GEOSITE,CN,DIRECT
   - GEOIP,CN,DIRECT
