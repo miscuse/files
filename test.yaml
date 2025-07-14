@@ -57,9 +57,21 @@ proxy-groups:
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
   - name: public
+    proxies:
+      - HK
+      - TW
+    type: select
+  - name: HK
     type: url-test
     include-all: true
-    exclude-filter: "private"
+    filter: "(?i)香港|hong kong"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: TW
+    type: url-test
+    include-all: true
+    filter: "(?i)台湾|taiwan"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
