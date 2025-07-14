@@ -26,11 +26,11 @@ rules:
   - PROCESS-NAME,ssh,DIRECT
   - PROCESS-NAME,aria2c,DIRECT
   - PROCESS-NAME,onedrive,DIRECT
+  - GEOSITE,bahamut,media
+  - GEOSITE,netflix,media
   - DOMAIN-SUFFIX,acgnx.se,proxy
   - DOMAIN,mikanani.me,proxy
   - PROCESS-NAME,qbittorrent,DIRECT
-  - GEOSITE,bahamut,proxy
-  - GEOSITE,netflix,proxy
   - GEOSITE,openai,proxy
   - GEOSITE,google-gemini,proxy
   - GEOSITE,anthropic,proxy
@@ -47,12 +47,25 @@ rule-providers!: {}
 proxy-groups:
   - name: proxy
     proxies:
-      - auto
+      - private
+      - public
     type: select
-  - name: auto
+  - name: private
+    type: fallback
     include-all: true
-    type: url-test
+    filter: "private"
     url: 'https://www.gstatic.com/generate_204'
-    filter: "(?i)香港|hong kong|台湾|taiwan"
+    interval: 300
+  - name: public
+    type: url-test
+    include-all: true
+    exclude-filter: "private"
+    url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
+  - name: media
+    proxies:
+      - public
+      - private
+    type: select
+    include-all: true
