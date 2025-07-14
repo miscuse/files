@@ -35,8 +35,8 @@ rules:
   - GEOSITE,google-gemini,proxy
   - GEOSITE,anthropic,proxy
   - GEOSITE,microsoft,proxy
+  - GEOSITE,18comic,public
   - GEOSITE,steam@cn,DIRECT
-  - GEOSITE,netlify,DIRECT
   - GEOSITE,CN,DIRECT
   - GEOIP,CN,DIRECT
   - GEOIP,lan,DIRECT
