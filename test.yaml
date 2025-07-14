@@ -53,6 +53,6 @@ proxy-groups:
     include-all: true
     type: url-test
     url: 'https://www.gstatic.com/generate_204'
-    filter: "(?i)香港|hong kong|台湾|taiwan|netflix"
+    filter: "(?i)香港|hong kong|台湾|taiwan"
     interval: 300
     tolerance: 50
