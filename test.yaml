@@ -71,14 +71,14 @@ proxy-groups:
   - name: HK
     type: url-test
     include-all: true
-    filter: "HK|(?i)香港|hong kong"
+    filter: "(?i)香港|hong kong"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
   - name: TW
     type: url-test
     include-all: true
-    filter: "TW|(?i)台湾|taiwan"
+    filter: "(?i)台湾|taiwan"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
