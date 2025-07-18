@@ -51,11 +51,12 @@ proxy-groups:
       - public
     type: select
   - name: private
-    type: fallback
+    type: url-test
     include-all: true
     filter: "private"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
+    tolerance: 50
   - name: public
     proxies:
       - HK
@@ -63,6 +64,7 @@ proxy-groups:
     type: select
   - name: media
     proxies:
+      - public
       - HK
       - TW
       - private
