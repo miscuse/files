@@ -26,7 +26,6 @@ rules:
   - PROCESS-NAME,ssh,DIRECT
   - PROCESS-NAME,iperf3,DIRECT
   - PROCESS-NAME,aria2c,DIRECT
-  - PROCESS-NAME,onedrive,DIRECT
   - GEOSITE,bahamut,media
   - GEOSITE,netflix,media
   - GEOSITE,18comic,media
