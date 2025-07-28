@@ -34,6 +34,8 @@ read -rp "Use AMD CPU (install amd-ucode)? (y/n): " use_amd_cpu
 read -rp "Use Intel GPU (install vulkan-intel etc)? (y/n): " use_intel_gpu
 read -rp "Use AMD GPU (install vulkan-radeon etc)? (y/n): " use_amd_gpu
 
+read -rp "Enable arch4edu (for Chrome, VSCode etc)? (y/n): " enable_arch4edu
+
 # --- Step 2: Wipe disk ---
 echo "[*] Wiping disk $disk"
 blkdiscard -v -f "$disk"
@@ -84,7 +86,8 @@ pacstrap -K /mnt base base-devel linux linux-firmware \
   vim neovim networkmanager sudo man-db man-pages \
   bash zsh btrfs-progs efibootmgr grub os-prober \
 
-cat << 'EOF' > /mnt/etc/pacman.d/cnmirrorlist
+# archlinuxcn configurations
+cat << 'EOF' > /mnt/etc/pacman.d/archlinuxcn-mirrorlist
 CacheServer = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
 CacheServer = https://mirrors.cloud.tencent.com/archlinuxcn/$arch
 CacheServer = https://mirrors.jlu.edu.cn/archlinuxcn/$arch
@@ -103,8 +106,29 @@ EOF
 
 cat << EOF >> /mnt/etc/pacman.conf
 [archlinuxcn]
-Include = /etc/pacman.d/cnmirrorlist
+Include = /etc/pacman.d/archlinuxcn-mirrorlist
 EOF
+
+# arch4edu configurations
+if [[ "$enable_arch4edu" == [yY] ]]; then
+  cat << 'EOF' > /mnt/etc/pacman.d/arch4edu-mirrorlist
+CacheServer = https://mirrors.bfsu.edu.cn/arch4edu/$arch
+CacheServer = https://mirrors.tencent.com/arch4edu/$arch
+CacheServer = https://mirror.iscas.ac.cn/arch4edu/$arch
+CacheServer = https://mirrors.nju.edu.cn/arch4edu/$arch
+CacheServer = https://mirror.nyist.edu.cn/arch4edu/$arch
+CacheServer = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
+Server = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
+Server = https://mirrors.bfsu.edu.cn/arch4edu/$arch
+Server = https://mirror.nyist.edu.cn/arch4edu/$arch
+EOF
+
+  cat << EOF >> /mnt/etc/pacman.conf
+[arch4edu]
+SigLevel = Never
+Include = /etc/pacman.d/arch4edu-mirrorlist
+EOF
+fi
 
 # --- Step 7: Configure system ---
 echo "[*] Generating fstab"
@@ -145,7 +169,11 @@ grub-mkconfig -o /boot/grub/grub.cfg
 ## Install packages ##
 
 # install keyring first
-pacman -Syu --noconfirm archlinuxcn-keyring
+pacman -Sy --noconfirm archlinuxcn-keyring
+
+if [[ "$enable_arch4edu" == [yY] ]]; then
+  pacman -Sy --noconfirm arch4edu-keyring
+fi
 
 # configurations and services related packages
 pacman -S --noconfirm rsync devtools chezmoi chrony pacman-contrib snapper snap-pac flatpak paru
@@ -157,8 +185,8 @@ pacman -S --noconfirm noto-fonts-cjk noto-fonts noto-fonts-emoji ttf-sarasa-goth
 pacman -S --noconfirm --asexplicit direnv starship htop ripgrep fd fzf moreutils fastfetch gnome-shell-extension-appindicator
 
 # docker & virt-manager
-pacman -S --noconfirm docker virt-manager
-pacman -S --noconfirm --asdeps dnsmasq qemu-desktop
+pacman -S --noconfirm docker virt-manager qemu-desktop
+pacman -S --noconfirm --asdeps dnsmasq
 usermod -aG docker,libvirt "$username"
 
 ############ hardware specific ############
