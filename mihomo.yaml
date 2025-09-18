@@ -26,7 +26,6 @@ rules:
   - PROCESS-NAME,iperf3,DIRECT
   - GEOSITE,bahamut,media
   - GEOSITE,netflix,media
-  - GEOSITE,18comic,media
   - DOMAIN-SUFFIX,acgnx.se,proxy
   - DOMAIN,mikanani.me,proxy
   - PROCESS-NAME,qbittorrent,DIRECT
@@ -56,19 +55,23 @@ proxy-groups:
     proxies:
       - HK
       - TW
+      - SG
+      - JP
+      - US
+      - auto
     type: select
   - name: media
     proxies:
+      - private
       - public
       - HK
       - TW
-      - private
     type: select
     include-all: true
   - name: HK
     type: url-test
     include-all: true
-    filter: "(?i)香港|hong kong"
+    filter: "(?i)香港|hk|hongkong|hong kong"
     exclude-filter: "private"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
@@ -76,8 +79,39 @@ proxy-groups:
   - name: TW
     type: url-test
     include-all: true
-    filter: "(?i)台湾|taiwan"
+    filter: "(?i)台湾|tw|taiwan"
     exclude-filter: "private"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: SG
+    type: url-test
+    include-all: true
+    filter: "(?i)新加坡|狮城|sg|singapore"
+    exclude-filter: "private"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: JP
+    type: url-test
+    include-all: true
+    filter: "(?i)日本|jp|japan"
+    exclude-filter: "private"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: US
+    type: url-test
+    include-all: true
+    filter: "(?i)美国|[^ar]us|unitedstates|united states"
+    exclude-filter: "private"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: auto
+    type: url-test
+    include-all: true
+    exclude-filter: "(?i)private|Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
