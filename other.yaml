@@ -62,10 +62,12 @@ proxy-groups:
       - TW
     type: select
     include-all: true
+    exclude-filter: "(?i)Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后|软件|线路|公益"
   - name: HK
     type: url-test
     include-all: true
     filter: "(?i)香港|hk|hongkong|hong kong"
+    exclude-filter: "(?i)Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后|软件|线路|公益"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
@@ -73,6 +75,7 @@ proxy-groups:
     type: url-test
     include-all: true
     filter: "(?i)台湾|tw|taiwan"
+    exclude-filter: "(?i)Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后|软件|线路|公益"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
@@ -80,6 +83,7 @@ proxy-groups:
     type: url-test
     include-all: true
     filter: "(?i)新加坡|狮城|sg|singapore"
+    exclude-filter: "(?i)Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后|软件|线路|公益"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
@@ -87,6 +91,7 @@ proxy-groups:
     type: url-test
     include-all: true
     filter: "(?i)日本|jp|japan"
+    exclude-filter: "(?i)Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后|软件|线路|公益"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
@@ -94,13 +99,14 @@ proxy-groups:
     type: url-test
     include-all: true
     filter: "(?i)美国|[^ar]us|unitedstates|united states"
+    exclude-filter: "(?i)Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后|软件|线路|公益"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
   - name: auto
     type: url-test
     include-all: true
-    exclude-filter: "(?i)Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后"
+    exclude-filter: "(?i)Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后|软件|线路|公益"
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
