@@ -1,0 +1,106 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: '*'
+mode: rule
+log-level: info
+external-controller: '127.0.0.1:9090'
+unified-delay: true
+tcp-concurrent: true
+dns:
+    enable: true
+    ipv6: false
+    default-nameserver: [223.5.5.5, 119.29.29.29]
+    nameserver: ['tls://dns.google']
+    direct-nameserver: ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query']
+    proxy-server-nameserver: ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query']
+    enhanced-mode: fake-ip
+    fake-ip-range: 198.18.0.1/16
+    fake-ip-filter:
+      - '*.lan'
+      - 'time.*.com'
+      - 'ntp.*.com'
+    use-hosts: true
+    respect-rules: true
+
+rules:
+  - PROCESS-NAME,iperf3,DIRECT
+  - GEOSITE,bahamut,media
+  - GEOSITE,netflix,media
+  - DOMAIN-SUFFIX,acgnx.se,proxy
+  - DOMAIN,mikanani.me,proxy
+  - PROCESS-NAME,qbittorrent,DIRECT
+  - GEOSITE,openai,proxy
+  - GEOSITE,google-gemini,proxy
+  - GEOSITE,anthropic,proxy
+  - GEOSITE,microsoft,proxy
+  - GEOSITE,steam@cn,DIRECT
+  - GEOSITE,CN,DIRECT
+  - GEOIP,CN,DIRECT
+  - GEOIP,lan,DIRECT
+  - MATCH,proxy
+
+rule-providers!: {}
+
+proxy-groups:
+  - name: proxy
+    proxies:
+      - public
+    type: select
+  - name: public
+    proxies:
+      - auto
+      - HK
+      - TW
+      - SG
+      - JP
+      - US
+    type: select
+  - name: media
+    proxies:
+      - public
+      - HK
+      - TW
+    type: select
+    include-all: true
+  - name: HK
+    type: url-test
+    include-all: true
+    filter: "(?i)香港|hk|hongkong|hong kong"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: TW
+    type: url-test
+    include-all: true
+    filter: "(?i)台湾|tw|taiwan"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: SG
+    type: url-test
+    include-all: true
+    filter: "(?i)新加坡|狮城|sg|singapore"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: JP
+    type: url-test
+    include-all: true
+    filter: "(?i)日本|jp|japan"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: US
+    type: url-test
+    include-all: true
+    filter: "(?i)美国|[^ar]us|unitedstates|united states"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+  - name: auto
+    type: url-test
+    include-all: true
+    exclude-filter: "(?i)Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后"
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
