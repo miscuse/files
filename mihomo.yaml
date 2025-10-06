@@ -60,6 +60,8 @@ proxy-groups:
       - US
       - auto
     type: select
+    include-all: true
+    exclude-filter: "(?i)private|Traffic|Expire|频道|订阅|ISP|流量|到期|重置|网址|文档|客服|售后|软件"
   - name: media
     proxies:
       - private
